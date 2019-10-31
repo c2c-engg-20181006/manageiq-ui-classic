@@ -210,8 +210,18 @@ class ApplicationController < ActionController::Base
   end
 
   def allow_websocket
-    override_content_security_policy_directives(:connect_src => ["'self'", websocket_origin])
+    src_data = ["'self'",'data:',websocket_origin,'https://i1379.photobucket.com','https://app.powerbi.com','https://cdnjs.cloudflare.com','https://fonts.googleapis.com','https://ajax.googleapis.com','https://yt3.ggpht.com','https://cors-anywhere.herokuapp.com','https://cloudpricingcalculator.appspot.com','https://cdn3.devexpress.com','https://stackpath.bootstrapcdn.com','https://maxcdn.bootstrapcdn.com','https://cdn.lo4d.com','https://cdn.iconscout.com','https://ga0.imgix.net','https://encrypted-tbn0.gstatic.com','https://code.angularjs.org','https://kendo.cdn.telerik.com','https://fonts.gstatic.com','https://translate.google.com','https://rawgit.com','https://ajax.aspnetcdn.com','https://translate.googleapis.com','https://www.gstatic.com','https://cdn.rawgit.com','http://netdna.bootstrapcdn.com','http://angular-ui.github.io','https://www.w3schools.com','http://i.imgur.com','https://cdn.jsdelivr.net','https://use.fontawesome.com']
+    ENV.each do |k, v|
+      if k.start_with? 'CB_CSP_'
+        unless src_data.include? v
+          src_data.push v
+        end
+      end
+    end
+    src_data.push ENV['CB_SERVICE']
+    override_content_security_policy_directives(:connect_src => src_data)
   end
+
   private :allow_websocket
 
   def reset_toolbar

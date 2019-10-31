@@ -3367,4 +3367,5 @@ Rails.application.routes.draw do
   resources :ems_physical_infra, :as => :ems_physical_infras
   resources :ems_container,      :as => :ems_containers
   resources :ems_network,        :as => :ems_networks
+  resources :nodeurl
 end

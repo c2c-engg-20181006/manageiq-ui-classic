@@ -37,7 +37,7 @@
                             'ng-model'  => 'vm.floatingIpModel.ext_management_system.name'}
 
     .form-group{'ng-class' => '{"has-error": angularForm.cloud_network_id.$invalid}',
-                'ng-if'    => "vm.floatingIpModel.ems_id"}
+                'ng-if'    => "vm.floatingIpModel.ems_id && (vm.floatingIpModel.emstype || vm.floatingIpModel.ext_management_system.type)!='ManageIQ::Providers::Alibaba::NetworkManager'"}
       %label.col-md-2.control-label
         = _('External Network')
       .col-md-8{'ng-if' => 'vm.newRecord'}
@@ -60,7 +60,7 @@
                             'ng-model'  => 'vm.floatingIpModel.cloud_network.name'}
 
     .form-group{'ng-class' => '{"has-error": angularForm.cloud_tenant_id.$invalid}',
-                'ng-if'    => "vm.floatingIpModel.ems_id"}
+                'ng-if'    => "vm.floatingIpModel.ems_id && (vm.floatingIpModel.emstype || vm.floatingIpModel.ext_management_system.type)!='ManageIQ::Providers::Alibaba::NetworkManager'"}
       %label.col-md-2.control-label
         = _('Cloud Tenant Placement')
       .col-md-8{'ng-if' => 'vm.newRecord'}
@@ -95,6 +95,15 @@
                             'ng-disabled' => '! vm.newRecord',
                             'maxlength'   => 40,
                             'ng-model'    => 'vm.floatingIpModel.address'}
+
+    .form-group{'ng-if' => "(vm.floatingIpModel.emstype || vm.floatingIpModel.ext_management_system.type)=='ManageIQ::Providers::Alibaba::NetworkManager'"}
+      %label.col-md-2.control-label
+        = _('Bandwidth')
+      .col-md-8
+        %input.form-control{'type'        => 'text',
+                            'name'        => 'bandwidth',
+                            'maxlength'   => 3,
+                            'ng-model'    => 'vm.floatingIpModel.bandwidth'}
 
     .form-group
       %label.col-md-2.control-label

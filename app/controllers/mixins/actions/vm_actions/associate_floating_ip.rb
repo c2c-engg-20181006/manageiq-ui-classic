@@ -6,7 +6,7 @@ module Mixins
           assert_privileges("instance_associate_floating_ip")
           recs = checked_or_params
           @record = find_record_with_rbac(VmCloud, recs.first)
-          if @record.supports_associate_floating_ip? && @record.ext_management_system.present?
+          if @record.class.supports_associate_floating_ip? && @record.ext_management_system.present?
             if @explorer
               associate_floating_ip
               @refresh_partial = "vm_common/associate_floating_ip"
@@ -47,7 +47,11 @@ module Mixins
         def associate_floating_ip_form_fields
           assert_privileges("instance_associate_floating_ip")
           @record = find_record_with_rbac(VmCloud, params[:id])
-          floating_ips = @record.cloud_tenant.nil? ? [] : @record.cloud_tenant.floating_ips.where(:vm_id => nil)
+          if @record.vendor == 'alibaba'
+            floating_ips = @record.ext_management_system.floating_ips.where(:vm_id => nil )
+          else
+            floating_ips = @record.cloud_tenant.floating_ips.where(:vm_id => nil)
+          end
 
           render :json => {
             :floating_ips => floating_ips

@@ -15,6 +15,7 @@ ManageIQ.angular.app.controller('floatingIpFormController', ['$scope', 'floating
     vm.saveUrl = vm.newRecord ? '/floating_ip/create/new' : '/floating_ip/update/' + floatingIpFormId;
 
     vm.fields = [
+      'bandwidth',
       'address',
       'cloud_network_id',
       'cloud_tenant_id',
@@ -68,6 +69,9 @@ ManageIQ.angular.app.controller('floatingIpFormController', ['$scope', 'floating
   };
 
   vm.filterNetworkManagerChanged = function(id) {
+    miqService.getProviderAttributes(function(data) {
+      vm.floatingIpModel.emstype = data.type;
+    })(id);
     miqService.getCloudNetworksByEms(function(data) {
       vm.available_networks = data.resources;
     })(id);

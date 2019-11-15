@@ -98,11 +98,12 @@ module OpsController::Settings::Schedules
       @log_password         = depot.try(:authentication_password)
       @log_aws_region       = depot.try(:aws_region)
       @openstack_region     = depot.try(:openstack_region)
+      # C2C: Added code for C2C cloud providers
       @telefonica_region    = depot.try(:telefonica_region)
+      @orange_region        = depot.try(:orange_region)
       @huawei_region        = depot.try(:huawei_region)
       @otc_region           = depot.try(:otc_region)
-      @orange_region        = depot.try(:orange_region)
-      @project_name        = depot.try(:project_name)
+      @project_name         = depot.try(:project_name)
       @keystone_api_version = depot.try(:keystone_api_version)
       @v3_domain_ident      = depot.try(:v3_domain_ident)
       @swift_api_port       = full_uri.blank? ? nil : URI(full_uri).port
@@ -136,10 +137,11 @@ module OpsController::Settings::Schedules
       log_userid           = depot.try(:authentication_userid)
       log_aws_region       = depot.try(:aws_region)
       openstack_region     = depot.try(:openstack_region)
+      # C2C: Added code for C2C cloud providers
       telefonica_region    = depot.try(:telefonica_region)
+      orange_region        = depot.try(:orange_region)
       huawei_region        = depot.try(:huawei_region)
       otc_region           = depot.try(:otc_region)
-      orange_region        = depot.try(:orange_region)
       project_name         = depot.try(:project_name)
       keystone_api_version = depot.try(:keystone_api_version)
       v3_domain_ident      = depot.try(:v3_domain_ident)
@@ -184,9 +186,9 @@ module OpsController::Settings::Schedules
       :log_aws_region       => log_aws_region ? log_aws_region : "",
       :openstack_region     => openstack_region ? openstack_region : "",
       :telefonica_region    => telefonica_region ? telefonica_region : "",
+      :orange_region        => orange_region ? orange_region : "",
       :huawei_region        => huawei_region ? huawei_region : "",
       :otc_region           => otc_region ? otc_region : "",
-      :orange_region        => orange_region ? orange_region : "",
       :project_name         => project_name ? project_name : "",
       :keystone_api_version => keystone_api_version,
       :v3_domain_ident      => v3_domain_ident ? v3_domain_ident : "",
@@ -313,7 +315,7 @@ module OpsController::Settings::Schedules
     case params[:action_typ]
     when "db_backup"          then "DatabaseBackup"
     when /check_compliance\z/ then (params[:action_typ].split("_") - params[:action_typ].split("_").last(2)).join("_")
-                                                                                                            .classify
+                                     .classify
     when "emscluster"         then "EmsCluster"
     when "automation_request" then "AutomationRequest"
     else                           params[:action_typ].camelcase
@@ -344,7 +346,7 @@ module OpsController::Settings::Schedules
     when "ems"
       filtered_item_list = if %w[emscluster host host_check_compliance storage].include?(action_type)
                              find_filtered(ExtManagementSystem).collect { |ems| ems.name if ems.number_of(:hosts).positive? }
-                                                               .delete_if(&:blank?).sort_by(&:downcase)
+                               .delete_if(&:blank?).sort_by(&:downcase)
                            else
                              find_filtered(ExtManagementSystem).sort_by { |vm| vm.name.downcase }.collect(&:name).uniq
                            end
@@ -397,11 +399,11 @@ module OpsController::Settings::Schedules
         else
           case schedule.filter.exp[key]["field"]
           when "Vm.ext_management_system-name",
-               "MiqTemplate.ext_management_system-name",
-               "Storage.ext_management_systems-name",
-               "Host.ext_management_system-name",
-               "EmsCluster.ext_management_system-name",
-               "ContainerImage.ext_management_system-name"
+            "MiqTemplate.ext_management_system-name",
+            "Storage.ext_management_systems-name",
+            "Host.ext_management_system-name",
+            "EmsCluster.ext_management_system-name",
+            "ContainerImage.ext_management_system-name"
             filter_type = "ems"
           when "Vm.host-name", "MiqTemplate.host-name", "Storage.hosts-name", "Host-name"
             filter_type = "host"
@@ -457,8 +459,8 @@ module OpsController::Settings::Schedules
     end
     unless flash_errors?
       if sched.run_at[:interval][:unit] == "once" &&
-         sched.run_at[:start_time].to_time.utc < Time.now.utc &&
-         sched.enabled == true
+        sched.run_at[:start_time].to_time.utc < Time.now.utc &&
+        sched.enabled == true
         add_flash(_("Warning: This 'Run Once' timer is in the past and will never run as currently configured"), :warning)
       end
     end
@@ -607,7 +609,7 @@ module OpsController::Settings::Schedules
       when "ems"          then {"=" => {"field" => "#{model}.ext_management_system-name", "value" => params[:filter_value]}}
       when "host"         then {"=" => {"field" => "#{model}.host-name", "value" => params[:filter_value]}}
       when "miq_template", "vm", "container_image"
-                          then {"=" => {"field" => "#{model}-name", "value" => params[:filter_value]}}
+      then {"=" => {"field" => "#{model}-name", "value" => params[:filter_value]}}
       else                     {"IS NOT NULL" => {"field" => "#{model}-name"}}
       end
     end
@@ -649,8 +651,8 @@ module OpsController::Settings::Schedules
       [_("All VMs for Host"), "host"],
       [_("A single VM"), "vm"]
     ] +
-                             (@vm_global_filters.empty? ? [] : [[_("Global Filters"), "global"]]) +
-                             (@vm_my_filters.empty? ? [] : [[_("My Filters"), "my"]])
+      (@vm_global_filters.empty? ? [] : [[_("Global Filters"), "global"]]) +
+      (@vm_my_filters.empty? ? [] : [[_("My Filters"), "my"]])
 
     @template_options_for_select = [
       [_("All Templates"), "all"],
@@ -659,8 +661,8 @@ module OpsController::Settings::Schedules
       [_("All Templates for Host"), "host"],
       [_("A single Template"), "miq_template"]
     ] +
-                                   (@miq_template_global_filters.empty? ? [] : [[_("Global Filters"), "global"]]) +
-                                   (@miq_template_my_filters.empty? ? [] : [[_("My Filters"), "my"]])
+      (@miq_template_global_filters.empty? ? [] : [[_("Global Filters"), "global"]]) +
+      (@miq_template_my_filters.empty? ? [] : [[_("My Filters"), "my"]])
 
     @host_options_for_select = [
       [_("All Hosts"), "all"],
@@ -668,8 +670,8 @@ module OpsController::Settings::Schedules
       [_("All Hosts for Clusters / Deployment Roles"), "cluster"],
       [_("A single Host"), "host"]
     ] +
-                               (@host_global_filters.empty? ? [] : [[_("Global Filters"), "global"]]) +
-                               (@host_my_filters.empty? ? [] : [[_("My Filters"), "my"]])
+      (@host_global_filters.empty? ? [] : [[_("Global Filters"), "global"]]) +
+      (@host_my_filters.empty? ? [] : [[_("My Filters"), "my"]])
 
     # to do, add scheduling by project
     @container_image_options_for_select = [
@@ -683,8 +685,8 @@ module OpsController::Settings::Schedules
       [_("All Clusters for Infrastructure Provider"), "ems"],
       [_("A single Cluster"), "cluster"]
     ] +
-                                  (@cluster_global_filters.empty? ? [] : [[_("Global Filters"), "global"]]) +
-                                  (@cluster_my_filters.empty? ? [] : [[_("My Filters"), "my"]])
+      (@cluster_global_filters.empty? ? [] : [[_("Global Filters"), "global"]]) +
+      (@cluster_my_filters.empty? ? [] : [[_("My Filters"), "my"]])
 
     @storage_options_for_select = [
       [_("All Datastores"), "all"],
@@ -692,8 +694,8 @@ module OpsController::Settings::Schedules
       [_("All Datastores for Infrastructure Provider"), "ems"],
       [_("A single Datastore"), "storage"]
     ] +
-                                  (@storage_global_filters.empty? ? [] : [[_("Global Filters"), "global"]]) +
-                                  (@storage_my_filters.empty? ? [] : [[_("My Filters"), "my"]])
+      (@storage_global_filters.empty? ? [] : [[_("Global Filters"), "global"]]) +
+      (@storage_my_filters.empty? ? [] : [[_("My Filters"), "my"]])
 
     build_db_options_for_select
   end
@@ -705,10 +707,11 @@ module OpsController::Settings::Schedules
     @regions_options_for_select = retrieve_aws_regions
     @aliyun_regions_options_for_select = retrieve_aliyun_regions
     @api_versions_options_for_select = retrieve_openstack_api_versions
-    @telefonica_api_versions_options_for_select = retrieve_telefonica_api_versions
-    @huawei_api_versions_options_for_select = retrieve_huawei_api_versions
-    @otc_api_versions_options_for_select = retrieve_otc_api_versions
-    @orange_api_versions_options_for_select = retrieve_orange_api_versions
+    # C2C: Added code for C2C cloud providers
+    @telefonica_api_versions_options_for_select = retrieve_c2c_api_versions
+    @orange_api_versions_options_for_select = retrieve_c2c_api_versions
+    @huawei_api_versions_options_for_select = retrieve_c2c_api_versions
+    @otc_api_versions_options_for_select = retrieve_c2c_api_versions
     @security_protocols_options_for_select = retrieve_security_protocols
   end
 
@@ -724,20 +727,9 @@ module OpsController::Settings::Schedules
     [['Keystone v2', 'v2'], ['Keystone v3', 'v3']]
   end
 
-  def retrieve_telefonica_api_versions
-    [['Keystone v2', 'v2'], ['Keystone v3', 'v3']]
-  end
-
-  def retrieve_huawei_api_versions
-    [['Keystone v2', 'v2'], ['Keystone v3', 'v3']]
-    end
-
-  def retrieve_otc_api_versions
-    [['Keystone v2', 'v2'], ['Keystone v3', 'v3']]
-  end
-
-  def retrieve_orange_api_versions
-    [['Keystone v2', 'v2'], ['Keystone v3', 'v3']]
+  # C2C: Added code for C2C cloud providers
+  def retrieve_c2c_api_versions
+    [['Keystone v3', 'v3']]
   end
 
   def retrieve_security_protocols
@@ -781,10 +773,11 @@ module OpsController::Settings::Schedules
     uri_settings[:log_protocol]         = params[:log_protocol]
     uri_settings[:aws_region]           = params[:log_aws_region]
     uri_settings[:openstack_region]     = params[:openstack_region]
+    # C2C: Added code for C2C cloud providers
     uri_settings[:telefonica_region]    = params[:telefonica_region]
+    uri_settings[:orange_region]        = params[:orange_region]
     uri_settings[:huawei_region]        = params[:huawei_region]
     uri_settings[:otc_region]           = params[:otc_region]
-    uri_settings[:orange_region]        = params[:orange_region]
     uri_settings[:project_name]         = params[:project_name]
     uri_settings[:keystone_api_version] = params[:keystone_api_version]
     uri_settings[:v3_domain_ident]      = params[:v3_domain_ident]

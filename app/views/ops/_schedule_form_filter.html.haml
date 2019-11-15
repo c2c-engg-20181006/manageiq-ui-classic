@@ -111,6 +111,7 @@
                            "selectpicker-for-select-tag" => "")
               %span.help-block{"ng-show" => "angularForm.keystone_api_version.$invalid"}
 
+        -# C2C: Added code for C2C cloud providers
         %apiversion{'ng-if' => 'swiftSecurityProtocolSelect()'}
           .form-group{"ng-class" => "{'has-error': angularForm.keystone_api_version.$invalid}"}
             %label.col-md-2.control-label
@@ -122,7 +123,17 @@
                            "checkchange"                 => "",
                            "selectpicker-for-select-tag" => "")
               %span.help-block{"ng-show" => "angularForm.keystone_api_version.$invalid"}
-
+        %apiversion{'ng-if' => 'swiftSecurityProtocolSelect()'}
+          .form-group{"ng-class" => "{'has-error': angularForm.keystone_api_version.$invalid}"}
+            %label.col-md-2.control-label
+              = _("API Version")
+            .col-md-8
+              = select_tag('keystone_api_version', options_for_select(@orange_api_versions_options_for_select),
+                           "ng-model"                    => "scheduleModel.keystone_api_version",
+                           "ng-required"                 => "swiftSecurityProtocolRequired()",
+                           "checkchange"                 => "",
+                           "selectpicker-for-select-tag" => "")
+              %span.help-block{"ng-show" => "angularForm.keystone_api_version.$invalid"}
         %apiversion{'ng-if' => 'swiftSecurityProtocolSelect()'}
           .form-group{"ng-class" => "{'has-error': angularForm.keystone_api_version.$invalid}"}
             %label.col-md-2.control-label
@@ -134,25 +145,12 @@
                            "checkchange"                 => "",
                            "selectpicker-for-select-tag" => "")
               %span.help-block{"ng-show" => "angularForm.keystone_api_version.$invalid"}
-
         %apiversion{'ng-if' => 'swiftSecurityProtocolSelect()'}
           .form-group{"ng-class" => "{'has-error': angularForm.keystone_api_version.$invalid}"}
             %label.col-md-2.control-label
               = _("API Version")
             .col-md-8
               = select_tag('keystone_api_version', options_for_select(@otc_api_versions_options_for_select),
-                           "ng-model"                    => "scheduleModel.keystone_api_version",
-                           "ng-required"                 => "swiftSecurityProtocolRequired()",
-                           "checkchange"                 => "",
-                           "selectpicker-for-select-tag" => "")
-              %span.help-block{"ng-show" => "angularForm.keystone_api_version.$invalid"}
-
-        %apiversion{'ng-if' => 'swiftSecurityProtocolSelect()'}
-          .form-group{"ng-class" => "{'has-error': angularForm.keystone_api_version.$invalid}"}
-            %label.col-md-2.control-label
-              = _("API Version")
-            .col-md-8
-              = select_tag('keystone_api_version', options_for_select(@orange_api_versions_options_for_select),
                            "ng-model"                    => "scheduleModel.keystone_api_version",
                            "ng-required"                 => "swiftSecurityProtocolRequired()",
                            "checkchange"                 => "",
@@ -196,6 +194,7 @@
             %span.help-block{"ng-show" => "angularForm.openstack_region.$invalid"}
               = _("Required")
 
+        -# C2C: Added code for C2C cloud providers
         .form-group{"ng-class" => "{'has-error': angularForm.telefonica_region.$invalid}",
                     "ng-if"    => 'swiftSecurityProtocolSelect()'}
           %label.col-md-2.control-label{"for" => "ems_region_input"}
@@ -209,7 +208,19 @@
                                 "checkchange"             => ""}
             %span.help-block{"ng-show" => "angularForm.telefonica_region.$invalid"}
               = _("Required")
-
+        .form-group{"ng-class" => "{'has-error': angularForm.orange_region.$invalid}",
+                    "ng-if"    => 'swiftSecurityProtocolSelect()'}
+          %label.col-md-2.control-label{"for" => "ems_region_input"}
+            = _('Region')
+          .col-md-4
+            %input.form-control{"type"                    => "text",
+                                "id"                      => "orange_region",
+                                "name"                    => "orange_region",
+                                "ng-model"                => "scheduleModel.orange_region",
+                                "required"                => true,
+                                "checkchange"             => ""}
+            %span.help-block{"ng-show" => "angularForm.orange_region.$invalid"}
+              = _("Required")
         .form-group{"ng-class" => "{'has-error': angularForm.huawei_region.$invalid}",
                     "ng-if"    => 'swiftSecurityProtocolSelect()'}
           %label.col-md-2.control-label{"for" => "ems_region_input"}
@@ -223,7 +234,6 @@
                                 "checkchange"             => ""}
             %span.help-block{"ng-show" => "angularForm.huawei_region.$invalid"}
               = _("Required")
-
         .form-group{"ng-class" => "{'has-error': angularForm.otc_region.$invalid}",
                     "ng-if"    => 'swiftSecurityProtocolSelect()'}
           %label.col-md-2.control-label{"for" => "ems_region_input"}
@@ -238,20 +248,7 @@
             %span.help-block{"ng-show" => "angularForm.otc_region.$invalid"}
               = _("Required")
 
-        .form-group{"ng-class" => "{'has-error': angularForm.orange_region.$invalid}",
-                    "ng-if"    => 'swiftSecurityProtocolSelect()'}
-          %label.col-md-2.control-label{"for" => "ems_region_input"}
-            = _('Region')
-          .col-md-4
-            %input.form-control{"type"                    => "text",
-                                "id"                      => "orange_region",
-                                "name"                    => "orange_region",
-                                "ng-model"                => "scheduleModel.orange_region",
-                                "required"                => true,
-                                "checkchange"             => ""}
-            %span.help-block{"ng-show" => "angularForm.orange_region.$invalid"}
-              = _("Required")
-
+        -# C2C: Added code for C2C Cloud providers for Project name parameter
         .form-group{"ng-class" => "{'has-error': angularForm.project_name.$invalid}",
                     "ng-if"    => 'swiftSecurityProtocolSelect()'}
           %label.col-md-2.control-label{"for" => "ems_project_name"}

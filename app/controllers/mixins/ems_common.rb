@@ -544,19 +544,21 @@ module Mixins
       @provider_regions = retrieve_provider_regions
       @openstack_infra_providers = retrieve_openstack_infra_providers
       @openstack_security_protocols = retrieve_openstack_security_protocols
-      @telefonica_security_protocols = retrieve_telefonica_security_protocols
-      @huawei_security_protocols = retrieve_huawei_security_protocols
-      @otc_security_protocols = retrieve_otc_security_protocols
-      @orange_security_protocols = retrieve_orange_security_protocols
+      # C2C: Added code for C2C cloud providers
+      @telefonica_security_protocols = retrieve_c2c_security_protocols
+      @orange_security_protocols = retrieve_c2c_security_protocols
+      @huawei_security_protocols = retrieve_c2c_security_protocols
+      @otc_security_protocols = retrieve_c2c_security_protocols
       @amqp_security_protocols = retrieve_amqp_security_protocols
       @nuage_security_protocols = retrieve_nuage_security_protocols
       @container_security_protocols = retrieve_container_security_protocols
       @scvmm_security_protocols = [[_('Basic (SSL)'), 'ssl'], ['Kerberos', 'kerberos']]
       @openstack_api_versions = retrieve_openstack_api_versions
-      @telefonica_api_versions = retrieve_telefonica_api_versions
-      @huawei_api_versions = retrieve_huawei_api_versions
-      @otc_api_versions = retrieve_otc_api_versions
-      @orange_api_versions = retrieve_orange_api_versions
+      # C2C: Added code for C2C cloud providers
+      @telefonica_api_versions = retrieve_c2c_api_versions
+      @orange_api_versions = retrieve_c2c_api_versions
+      @huawei_api_versions = retrieve_c2c_api_versions
+      @otc_api_versions = retrieve_c2c_api_versions
       @vmware_cloud_api_versions = retrieve_vmware_cloud_api_versions
       @emstype_display = model.supported_types_and_descriptions_hash[@ems.emstype]
       if @ems.respond_to?(:description)
@@ -586,20 +588,9 @@ module Mixins
       [['Keystone v2', 'v2'], ['Keystone v3', 'v3']]
     end
 
-    def retrieve_telefonica_api_versions
-      [['Keystone v2', 'v2'], ['Keystone v3', 'v3']]
-      end
-
-    def retrieve_huawei_api_versions
-      [['Keystone v2', 'v2'], ['Keystone v3', 'v3']]
-    end
-
-    def retrieve_otc_api_versions
-      [['Keystone v2', 'v2'], ['Keystone v3', 'v3']]
-    end
-
-    def retrieve_orange_api_versions
-      [['Keystone v2', 'v2'], ['Keystone v3', 'v3']]
+    # C2C: Added code for C2C cloud providers
+    def retrieve_c2c_api_versions
+      [['Keystone v3', 'v3']]
     end
 
     def retrieve_vmware_cloud_api_versions
@@ -618,20 +609,9 @@ module Mixins
       retrieve_security_protocols
     end
 
-    def retrieve_telefonica_security_protocols
-      retrieve_security_protocols
-      end
-
-    def retrieve_huawei_security_protocols
-      retrieve_security_protocols
-    end
-
-    def retrieve_otc_security_protocols
-      retrieve_security_protocols
-    end
-
-    def retrieve_orange_security_protocols
-      retrieve_security_protocols
+    # C2C: Added code for C2C cloud providers for security protocol field at provider validation page
+    def retrieve_c2c_security_protocols
+      [[_('SSL'), 'ssl-with-validation']]
     end
 
     def retrieve_nuage_security_protocols
